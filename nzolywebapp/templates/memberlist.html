@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- code in here to display a list of books-->
+<h2>Member List</h2>
+<h3>A list of all NZ Olympic Team members</h3>
+
+<table>
+    <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
+    {% for member in memberlist %}
+        <tr>
+            {% for entry in member %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
