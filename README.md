@@ -6,3 +6,8 @@
 ## Changes
 ### database changes 
 ### app changes 
+
+
+eventlist.html starts off empty, could share the same template 
+as memberlist.html for the display
+
