@@ -45,3 +45,7 @@ def listevents():
     eventList = connection.fetchall()
     return render_template("eventlist.html", eventlist = eventList)
 
+# add "/admin" route, share the same template as "base.html"
+@app.route("/admin")
+def adminhome():
+    return render_template("adminbase.html")
