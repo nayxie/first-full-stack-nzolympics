@@ -8,6 +8,7 @@
 ### app changes 
 
 
-eventlist.html starts off empty, could share the same template 
-as memberlist.html for the display
+eventlist.html is used to display a list of events,
+and is sharing the same template as memberlist.html 
+for the display
 
