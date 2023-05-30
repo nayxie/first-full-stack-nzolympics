@@ -68,3 +68,35 @@ def searchresult():
     return render_template("searchresult.html", memberlist = memberList, eventlist = eventList)
 
 
+
+past events: 
+
+SELECT CONCAT(m.FirstName,' ',m.LastName) AS Name, e.EventName, es.StageDate, es.StageName, es.Location, 
+esr.PointsScored
+FROM event_stage_results esr 
+LEFT JOIN members m ON esr.MemberID = m.MemberID
+LEFT JOIN event_stage es ON esr.StageID = es.StageID
+LEFT JOIN events e ON es.EventID = e.EventID;
+
+interpret esr.PointsScored
+
+if es.Qualifying == 1 AND esr.PointsScored >= es.PointsToQualify
+show "Q"
+else
+show "NQ"
+
+elif es.Qualifying == 0
+  if esr.Position == 1 
+    show "Gold"
+  elif esr.Position == 2 
+    show "Silver"
+   elif esr.Position == 3 
+    show "Bronze"  
+
+upcoming events:
+
+SELECT * 
+FROM event_stage es 
+LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID
+WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results);
+
