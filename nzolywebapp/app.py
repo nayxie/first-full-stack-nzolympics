@@ -49,3 +49,22 @@ def listevents():
 @app.route("/admin")
 def adminhome():
     return render_template("adminbase.html")
+
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+@app.route("/search/result", methods=["POST"])
+def searchresult():
+    searchterm = request.form.get("searchentry")
+    likesearchterm = f"%{searchterm}%"
+    connection = getCursor()
+    connection.execute("SELECT * FROM members WHERE CONCAT(FirstName, ' ', LastName) LIKE %s;", (likesearchterm,))
+    memberList = connection.fetchall()
+    
+    connection = getCursor()
+    connection.execute("SELECT * FROM events WHERE EventName LIKE %s;", (likesearchterm,))
+    eventList = connection.fetchall()
+    return render_template("searchresult.html", memberlist = memberList, eventlist = eventList)
+
+
