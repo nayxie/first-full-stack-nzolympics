@@ -39,11 +39,30 @@ def listmembers():
 
 @app.route("/memberevent")
 def memberevent():
-#    # membername, eventname, futureeventlist, pasteventlist
-    memberID = request.args.get('memberID')
-    
-    # use memberID in query, to fetch data, and send to html for display
+  # membername, eventname, futureeventlist, pasteventlist
+    memberid = request.args.get('memberID')
+    connection = getCursor()
+    connection.execute("SELECT CONCAT(FirstName,' ', LastName) FROM members \
+                       WHERE memberID = %s;", (memberid,))
+    membername = connection.fetchall()[0][0]
 
+    # fetch event name(s) of all past events 
+    connection = getCursor()
+    sql = "SELECT EventName FROM events e \
+    RIGHT JOIN event_stage es ON e.EventID = es.EventID \
+    RIGHT JOIN event_stage_results esr ON es.StageID = esr.StageID \
+    WHERE esr.MemberID = %s"
+    connection.execute(sql, (memberid,))
+    pastevents = connection.fetchall()
+
+    # print(memberid)
+    # print(membername)
+    # print(pastevents)
+
+    
+
+
+    
     return render_template("base.html")
 
 
@@ -104,8 +123,16 @@ def searchresult():
 
 # upcoming events:
 
-# SELECT * 
+# SELECT es.StageDate, es.StageName, es.Location 
 # FROM event_stage es 
 # LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID
-# WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results);
+# WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results)
+# LEFT JOIN members m ON m.MemberID = esr.MemberID;
 
+
+# ("SELECT es.StageDate, es.StageName, es.Location 
+# FROM event_stage es 
+# LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID
+# LEFT JOIN members m ON m.MemberID = esr.MemberID
+# WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results)
+# AND WHERE esr.MemberID = %s;"), (memberid,)) 
