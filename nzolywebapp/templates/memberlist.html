@@ -8,13 +8,12 @@
     <tr><th>Member ID</th><th>Team Name</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
     {% for member in memberlist %}
         <tr>
-            {% for index, entry in enumerate(member) %}
-                {% if index == 3 %}
-                    <td><a href="base.html">{{ entry }}</a></td>
-                {% else %}
-                    <td>{{ entry }}</td>
-                {% endif %}
-            {% endfor %}
+            <td>{{ member[0] }}</td>
+            <td>{{ member[1] }}</td>
+            <td>{{ member[2] }}</td>
+            <td><a href="{{ url_for('memberevent') }}?memberID={{ member[0] }}">{{ member[3] }}</a></td>
+            <td>{{ member[4] }}</td>
+            <td>{{ member[5] }}</td>
         </tr>
     {% endfor %}
 </table>
