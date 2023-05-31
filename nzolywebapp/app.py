@@ -40,8 +40,10 @@ def listmembers():
 @app.route("/memberevent")
 def memberevent():
 #    # membername, eventname, futureeventlist, pasteventlist
-    id = request.args.get('memberID')
-    print(id)
+    memberID = request.args.get('memberID')
+    
+    # use memberID in query, to fetch data, and send to html for display
+
     return render_template("base.html")
 
 
