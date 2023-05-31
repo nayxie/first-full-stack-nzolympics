@@ -37,6 +37,13 @@ def listmembers():
     memberList = connection.fetchall()
     return render_template("memberlist.html", memberlist = memberList)    
 
+# @app.route("/memberevent")
+# def memberevent():
+#    # membername, eventname, futureeventlist, pasteventlist
+   
+
+#    return render_template("memberevent.html",
+
 
 @app.route("/listevents")
 def listevents():
