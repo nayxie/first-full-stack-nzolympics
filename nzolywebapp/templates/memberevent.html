@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- code in here to display a list of upcoming events-->
+<!--membername, eventname, futureeventlist, pasteventlist-->
+<h2>{{membername}}</h2>
+<h3>Upcoming Events & Stages</h3>
+<h4>{{eventname}}</h4>
+<table>
+    {% for events in futureeventlist %}
+        <tr>
+            {% for entry in events %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<!-- code in here to display a list of past events-->
+<h3>Previous Results</h3>
+<h4>{{eventname}}</h4>
+<table>
+    {% for events in pasteventlist %}
+        <tr>
+            {% for entry in events %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
