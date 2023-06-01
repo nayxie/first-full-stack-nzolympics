@@ -37,50 +37,44 @@ def listmembers():
     memberList = connection.fetchall()
     return render_template("memberlist.html", memberlist = memberList)    
 
-@app.route("/memberevent")
-def memberevent():
+@app.route("/memberevent/<memberId>")
+def memberevent(memberId):
   # memberid, membername, futureevents, pastevents
-    memberid = request.args.get('memberID')
+    # memberId = request.args.get('memberID')
     connection = getCursor()
     connection.execute("SELECT CONCAT(FirstName,' ', LastName) FROM members \
-                       WHERE memberID = %s;", (memberid,))
-    membername = connection.fetchall()[0][0]
+                       WHERE memberID = %s;", (memberId,))
+    memberName = connection.fetchall()[0][0]
 
-    # fetch a list of tuples with event name(s) of all future events 
+    # fetch a list of tuples with information of all future events 
     connection = getCursor()
-    sql = "SELECT EventName FROM events e \
+    sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location \
+    FROM events e \
     RIGHT JOIN event_stage es ON e.EventID = es.EventID \
     LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID \
     WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results esr) \
     AND esr.MemberID = %s;"
-    connection.execute(sql, (memberid,))
-    futureevents = connection.fetchall()
+    connection.execute(sql, (memberId,))
+    futureeventList = connection.fetchall()
+    # print(memberId)
+    # print(memberName)
+    # print(futureeventList)
 
-    print(memberid)
-    print(membername)
-    print(futureevents)
-
-
-
-
-    # fetch a list of tuples with event name(s) of all past events 
+    # fetch a list of tuples with information of all past events 
     connection = getCursor()
-    sql = "SELECT EventName FROM events e \
+    sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, esr.PointsScored \
+    FROM events e \
     RIGHT JOIN event_stage es ON e.EventID = es.EventID \
     RIGHT JOIN event_stage_results esr ON es.StageID = esr.StageID \
     WHERE esr.MemberID = %s;"
-    connection.execute(sql, (memberid,))
-    pastevents = connection.fetchall()
+    connection.execute(sql, (memberId,))
+    pasteventList = connection.fetchall()
+    # print(memberId)
+    # print(memberName)
+    # print(pasteventList)
 
-    print(memberid)
-    print(membername)
-    print(pastevents)
-
-    
-
-
-    
-    return render_template("base.html")
+    return render_template("memberevent.html", memberid = memberId, membername = memberName, 
+                           futureeventlist = futureeventList, pasteventlist = pasteventList)
 
 
 @app.route("/listevents")
@@ -95,11 +89,11 @@ def listevents():
 def adminhome():
     return render_template("adminbase.html")
 
-@app.route("/search")
+@app.route("/admin/search")
 def search():
     return render_template("search.html")
 
-@app.route("/search/result", methods=["POST"])
+@app.route("/admin/search/result", methods=["POST"])
 def searchresult():
     searchterm = request.form.get("searchentry")
     likesearchterm = f"%{searchterm}%"
