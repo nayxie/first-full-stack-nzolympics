@@ -39,25 +39,42 @@ def listmembers():
 
 @app.route("/memberevent")
 def memberevent():
-  # membername, eventname, futureeventlist, pasteventlist
+  # memberid, membername, futureevents, pastevents
     memberid = request.args.get('memberID')
     connection = getCursor()
     connection.execute("SELECT CONCAT(FirstName,' ', LastName) FROM members \
                        WHERE memberID = %s;", (memberid,))
     membername = connection.fetchall()[0][0]
 
-    # fetch event name(s) of all past events 
+    # fetch a list of tuples with event name(s) of all future events 
+    connection = getCursor()
+    sql = "SELECT EventName FROM events e \
+    RIGHT JOIN event_stage es ON e.EventID = es.EventID \
+    LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID \
+    WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results esr) \
+    AND esr.MemberID = %s;"
+    connection.execute(sql, (memberid,))
+    futureevents = connection.fetchall()
+
+    print(memberid)
+    print(membername)
+    print(futureevents)
+
+
+
+
+    # fetch a list of tuples with event name(s) of all past events 
     connection = getCursor()
     sql = "SELECT EventName FROM events e \
     RIGHT JOIN event_stage es ON e.EventID = es.EventID \
     RIGHT JOIN event_stage_results esr ON es.StageID = esr.StageID \
-    WHERE esr.MemberID = %s"
+    WHERE esr.MemberID = %s;"
     connection.execute(sql, (memberid,))
     pastevents = connection.fetchall()
 
-    # print(memberid)
-    # print(membername)
-    # print(pastevents)
+    print(memberid)
+    print(membername)
+    print(pastevents)
 
     
 
