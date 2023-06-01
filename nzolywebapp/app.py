@@ -61,6 +61,7 @@ def memberevent(memberId):
     # print(futureeventList)
 
     # fetch a list of tuples with information of all past events 
+    # esr.PointsScored yet to be interpreted
     connection = getCursor()
     sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, esr.PointsScored \
     FROM events e \
@@ -107,43 +108,21 @@ def searchresult():
     return render_template("searchresult.html", memberlist = memberList, eventlist = eventList)
 
 
+# Add new members 
 
-# past events: 
+@app.route("/admin/addmembers", methods=["POST"])
+def addmembers():
+    return render_template("addmembers.html")
 
-# SELECT CONCAT(m.FirstName,' ',m.LastName) AS Name, e.EventName, es.StageDate, es.StageName, es.Location, 
-# esr.PointsScored
-# FROM event_stage_results esr 
-# LEFT JOIN members m ON esr.MemberID = m.MemberID
-# LEFT JOIN event_stage es ON esr.StageID = es.StageID
-# LEFT JOIN events e ON es.EventID = e.EventID;
+#    firstname = request.form.get("firstname")
+#     lastname = request.form.get("lastname")
+#     city = request.form.get("city")
+#     birthdate = request.form.get("birthdate")
+#  print(firstname)
+#     print(lastname)
+#     print(city)
+#     print(birthdate)
 
-# interpret esr.PointsScored
-
-# if es.Qualifying == 1 AND esr.PointsScored >= es.PointsToQualify
-# show "Q"
-# else
-# show "NQ"
-
-# elif es.Qualifying == 0
-#   if esr.Position == 1 
-#     show "Gold"
-#   elif esr.Position == 2 
-#     show "Silver"
-#    elif esr.Position == 3 
-#     show "Bronze"  
-
-# upcoming events:
-
-# SELECT es.StageDate, es.StageName, es.Location 
-# FROM event_stage es 
-# LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID
-# WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results)
-# LEFT JOIN members m ON m.MemberID = esr.MemberID;
-
-
-# ("SELECT es.StageDate, es.StageName, es.Location 
-# FROM event_stage es 
-# LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID
-# LEFT JOIN members m ON m.MemberID = esr.MemberID
-# WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results)
-# AND WHERE esr.MemberID = %s;"), (memberid,)) 
+# and edit the details of existing members.
+# Add new events and event_stages.
+# Add scores for an event stage and position for a non-qualifying event stage.
