@@ -110,18 +110,28 @@ def searchresult():
 
 # Add new members 
 
-@app.route("/admin/addmembers", methods=["POST"])
+@app.route("/admin/addmembers")
 def addmembers():
     return render_template("addmembers.html")
 
-#    firstname = request.form.get("firstname")
-#     lastname = request.form.get("lastname")
-#     city = request.form.get("city")
-#     birthdate = request.form.get("birthdate")
-#  print(firstname)
-#     print(lastname)
-#     print(city)
-#     print(birthdate)
+@app.route("/admin/updatemembers", methods=["POST"])
+def updatemembers():
+    firstname = request.form.get("firstname")
+    lastname = request.form.get("lastname")
+    city = request.form.get("city")
+    birthdate = request.form.get("birthdate")
+    # print(firstname)
+    # print(lastname)
+    # print(city)
+    # print(birthdate)
+
+    # - assign MemberID, TeamID to new member
+    # - insert new member data into members table
+    # - return memberlist.html
+    # - use re to validate user input
+
+    return render_template("adminbase.html")
+
 
 # and edit the details of existing members.
 # Add new events and event_stages.
