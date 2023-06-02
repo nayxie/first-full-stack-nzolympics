@@ -61,7 +61,7 @@ def memberevent(memberId):
     # print(futureeventList)
 
     # fetch a list of tuples with information of all past events 
-    # esr.PointsScored yet to be interpreted
+    
     connection = getCursor()
     sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, esr.PointsScored \
     FROM events e \
@@ -70,9 +70,19 @@ def memberevent(memberId):
     WHERE esr.MemberID = %s;"
     connection.execute(sql, (memberId,))
     pasteventList = connection.fetchall()
-    # print(memberId)
-    # print(memberName)
-    # print(pasteventList)
+    
+    # esr.PointsScored to be interpreted
+    # get hold of PointsToQualify from es
+    # get hold of PointsScored from esr  
+    # get hold of Position from esr, all of which are a list of int tuples
+    # for i in range(len(pointstoqualify))
+    #    if points to qualify[i] == None 
+    #       if position[i] == 1 - gold (- silver - bronze)
+    #    elif points to qualify[i] >= PointsScored[i] - Not Qualified
+    #    else: qualified
+            
+
+
 
     return render_template("memberevent.html", memberid = memberId, membername = memberName, 
                            futureeventlist = futureeventList, pasteventlist = pasteventList)
