@@ -153,5 +153,25 @@ def updatemembersandevents():
 
 
 # and edit the details of existing members.
-# Add new events and event_stages.
+@app.route("/admin/edit")
+def edit():
+
+    # return page where all member data is shown, with memberID linked 
+    # to another page where user can edit all information of the chosen 
+    # member, similar template to memberlist  
+
+
+#   page where user can edit all information of the chosen member, appended
+#   with memberID from edit page 
+#   similar template to addmembersandevents
+#   return redirect("/listmembers")
+@app.route("/admin/editmembers")
+def editmembers():
+
+
+
+
+
+
+# Add new event_stages.
 # Add scores for an event stage and position for a non-qualifying event stage.
