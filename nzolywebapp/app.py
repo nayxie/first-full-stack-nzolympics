@@ -110,27 +110,46 @@ def searchresult():
 
 # Add new members 
 
-@app.route("/admin/addmembers")
-def addmembers():
-    return render_template("addmembers.html")
+@app.route("/admin/addmembersandevents")
+def addmembersandevents():
+    return render_template("addmembersandevents.html")
 
-@app.route("/admin/updatemembers", methods=["POST"])
-def updatemembers():
+@app.route("/admin/updatemembersandevents", methods=["POST"])
+def updatemembersandevents():
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
     city = request.form.get("city")
     birthdate = request.form.get("birthdate")
-    # print(firstname)
-    # print(lastname)
-    # print(city)
-    # print(birthdate)
+    eventname = request.form.get("eventname")
+    sport = request.form.get("sport")
 
     # - assign MemberID, TeamID to new member
     # - insert new member data into members table
     # - return memberlist.html
     # - use re to validate user input
+    
+    # create new entry in the teams table 
+    # name of sport is passed to TeamName
+    # get hold of the auto-incremented TeamID
+    connection = getCursor()
+    connection.execute("INSERT INTO teams (TeamName) VALUES (%s)", (sport,))
+    connection.execute("SELECT TeamID FROM teams")
+    teamid = connection.fetchall()[-1][0]
+    
+    # create new entry in the events table
+    connection = getCursor()
+    connection.execute("INSERT INTO events (EventName, Sport, NZTeam) VALUES (%s, %s, %s)", (eventname, sport, teamid))
 
-    return render_template("adminbase.html")
+    # create new entry in the members table
+    connection = getCursor()
+    sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
+    connection.execute(sql, (teamid, firstname, lastname, city, birthdate))
+
+    # redict to listmembers, where users can see the updated member information
+    # and because the page is based on base.html, there's link to list events as well 
+    # where users can click and see the updated event information 
+
+    return redirect("/listmembers")
 
 
 # and edit the details of existing members.
