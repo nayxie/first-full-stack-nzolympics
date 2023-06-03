@@ -166,13 +166,35 @@ def updatemembersandevents():
 
 
 # and edit the details of existing members.
+# return page where all member data is shown, with memberID linked 
+# to another page where user can edit all information of the chosen 
+# member, similar template to memberlist  
 
-# @app.route("/admin/edit")
-# def edit():
+@app.route("/admin/edit")
+def edit():
+    connection = getCursor()
+    connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
+                       e.EventName, e.Sport FROM members m \
+                       LEFT JOIN events e ON m.TeamID = e.NZTeam;")
+    memberList = connection.fetchall()
+    return render_template("edit.html", memberlist = memberList)
 
-    # return page where all member data is shown, with memberID linked 
-    # to another page where user can edit all information of the chosen 
-    # member, similar template to memberlist  
+@app.route("/admin/editmembers/<memberId>")    
+def editmembers(memberId):
+    connection = getCursor()
+    connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
+                       e.EventName, e.Sport FROM members m \
+                       LEFT JOIN events e ON m.TeamID = e.NZTeam \
+                       WHERE memberID = %s;", (memberId,))
+    memberInfo = connection.fetchall()
+    return render_template("editmembers.html", memberinfo = memberInfo) 
+
+# now the funtion is working, but instead of updating, it creates a new entry
+# because it is redirected to the update member page 
+# change the update member page name to add members 
+# change add members to add 
+# add and addmembersandevents 
+# edit, editmembers, and updatemembers  
 
 
 #   page where user can edit all information of the chosen member, appended
@@ -184,9 +206,5 @@ def updatemembersandevents():
 # def editmembers():
 
 
-
-
-
-
 # Add new event_stages.
-# Add scores for an event stage and position for a non-qualifying event stage.
+# Add scores for an event stage and position for a non-qualifying event stage
