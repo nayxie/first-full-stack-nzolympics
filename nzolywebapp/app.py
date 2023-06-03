@@ -125,12 +125,12 @@ def searchresult():
 
 # Add new members 
 
-@app.route("/admin/addmembersandevents")
-def addmembersandevents():
-    return render_template("addmembersandevents.html")
+@app.route("/admin/addMandE")
+def addMandE():
+    return render_template("addMandE.html")
 
-@app.route("/admin/updatemembersandevents", methods=["POST"])
-def updatemembersandevents():
+@app.route("/admin/addtoMandE", methods=["POST"])
+def addtoMandE():
     firstname = request.form.get("firstname").title()
     lastname = request.form.get("lastname").title()
     city = request.form.get("city")
@@ -170,24 +170,63 @@ def updatemembersandevents():
 # to another page where user can edit all information of the chosen 
 # member, similar template to memberlist  
 
-@app.route("/admin/edit")
-def edit():
+@app.route("/admin/displayMandE")
+def displayMandE():
     connection = getCursor()
     connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
                        e.EventName, e.Sport FROM members m \
                        LEFT JOIN events e ON m.TeamID = e.NZTeam;")
     memberList = connection.fetchall()
-    return render_template("edit.html", memberlist = memberList)
+    return render_template("displayMandE.html", memberlist = memberList)
 
-@app.route("/admin/editmembers/<memberId>")    
-def editmembers(memberId):
+@app.route("/admin/editMandE/<memberId>")    
+def editMandE(memberId):
     connection = getCursor()
     connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
                        e.EventName, e.Sport FROM members m \
                        LEFT JOIN events e ON m.TeamID = e.NZTeam \
                        WHERE memberID = %s;", (memberId,))
     memberInfo = connection.fetchall()
-    return render_template("editmembers.html", memberinfo = memberInfo) 
+    return render_template("editMandE.html", memberinfo = memberInfo) 
+
+
+
+
+@app.route("/admin/updateMandE", methods=["POST"])
+def updateMandE():
+    firstname = request.form.get("firstname").title()
+    lastname = request.form.get("lastname").title()
+    city = request.form.get("city")
+    birthdate = request.form.get("birthdate")
+    eventname = string.capwords(request.form.get("eventname"))
+    sport = request.form.get("sport").title()
+
+
+    # - use re to validate user input
+    
+    # create new entry in the teams table 
+    # name of sport is passed to TeamName
+    # get hold of the auto-incremented TeamID
+    connection = getCursor()
+    connection.execute("INSERT INTO teams (TeamName) VALUES (%s)", (sport,))
+    connection.execute("SELECT TeamID FROM teams")
+    teamid = connection.fetchall()[-1][0]
+    
+    # create new entry in the events table
+    connection = getCursor()
+    connection.execute("INSERT INTO events (EventName, Sport, NZTeam) VALUES (%s, %s, %s)", (eventname, sport, teamid))
+
+    # create new entry in the members table
+    connection = getCursor()
+    sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
+    connection.execute(sql, (teamid, firstname, lastname, city, birthdate))
+
+    # redict to listmembers, where users can see the updated member information
+    # and because the page is based on base.html, there's link to list events as well 
+    # where users can click and see the updated event information 
+
+    return redirect("/listmembers")
+
 
 # now the funtion is working, but instead of updating, it creates a new entry
 # because it is redirected to the update member page 
