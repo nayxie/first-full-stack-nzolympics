@@ -9,6 +9,8 @@ import mysql.connector
 from mysql.connector import FieldType
 import connect
 
+import string
+
 app = Flask(__name__)
 
 dbconn = None
@@ -39,8 +41,6 @@ def listmembers():
 
 @app.route("/memberevent/<memberId>")
 def memberevent(memberId):
-  # memberid, membername, futureevents, pastevents
-    # memberId = request.args.get('memberID')
     connection = getCursor()
     connection.execute("SELECT CONCAT(FirstName,' ', LastName) FROM members \
                        WHERE memberID = %s;", (memberId,))
@@ -56,33 +56,38 @@ def memberevent(memberId):
     AND esr.MemberID = %s;"
     connection.execute(sql, (memberId,))
     futureeventList = connection.fetchall()
-    # print(memberId)
-    # print(memberName)
-    # print(futureeventList)
 
     # fetch a list of tuples with information of all past events 
-    
     connection = getCursor()
-    sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, esr.PointsScored \
-    FROM events e \
-    RIGHT JOIN event_stage es ON e.EventID = es.EventID \
-    RIGHT JOIN event_stage_results esr ON es.StageID = esr.StageID \
-    WHERE esr.MemberID = %s;"
+    sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, \
+        esr.PointsScored, es.PointsToQualify, esr.Position \
+        FROM events e \
+        RIGHT JOIN event_stage es ON e.EventID = es.EventID \
+        RIGHT JOIN event_stage_results esr ON es.StageID = esr.StageID \
+        WHERE esr.MemberID = %s;"
     connection.execute(sql, (memberId,))
     pasteventList = connection.fetchall()
+
+    # convert all tuples to lists in pasteventList to prepare for interpretation of scores and positions 
+    # Depending on StageName, modify last values accordingly
+    pasteventList = [list(item) for item in pasteventList]
+    for item in pasteventList:
+        if item[2] == "Final":
+            if item[-1] == 1:
+                item[-1] = "Gold"
+            elif item[-1] == 2:
+                item[-1] = "Silver"
+            elif item[-1] == 3:
+                item[-1] = "Bronze"
+        else:
+            if item[-2] >= item[-3]:
+                item[-1] = "Not Qualified"
+            else:
+                item[-1] = "Qualified"
     
-    # esr.PointsScored to be interpreted
-    # get hold of PointsToQualify from es
-    # get hold of PointsScored from esr  
-    # get hold of Position from esr, all of which are a list of int tuples
-    # for i in range(len(pointstoqualify))
-    #    if points to qualify[i] == None 
-    #       if position[i] == 1 - gold (- silver - bronze)
-    #    elif points to qualify[i] >= PointsScored[i] - Not Qualified
-    #    else: qualified
-            
-
-
+    for item in pasteventList:
+        del item[-2]
+        del item[-3]
 
     return render_template("memberevent.html", memberid = memberId, membername = memberName, 
                            futureeventlist = futureeventList, pasteventlist = pasteventList)
@@ -126,16 +131,14 @@ def addmembersandevents():
 
 @app.route("/admin/updatemembersandevents", methods=["POST"])
 def updatemembersandevents():
-    firstname = request.form.get("firstname")
-    lastname = request.form.get("lastname")
+    firstname = request.form.get("firstname").title()
+    lastname = request.form.get("lastname").title()
     city = request.form.get("city")
     birthdate = request.form.get("birthdate")
-    eventname = request.form.get("eventname")
-    sport = request.form.get("sport")
+    eventname = string.capwords(request.form.get("eventname"))
+    sport = request.form.get("sport").title()
 
-    # - assign MemberID, TeamID to new member
-    # - insert new member data into members table
-    # - return memberlist.html
+
     # - use re to validate user input
     
     # create new entry in the teams table 
@@ -163,8 +166,9 @@ def updatemembersandevents():
 
 
 # and edit the details of existing members.
-@app.route("/admin/edit")
-def edit():
+
+# @app.route("/admin/edit")
+# def edit():
 
     # return page where all member data is shown, with memberID linked 
     # to another page where user can edit all information of the chosen 
@@ -175,8 +179,9 @@ def edit():
 #   with memberID from edit page 
 #   similar template to addmembersandevents
 #   return redirect("/listmembers")
-@app.route("/admin/editmembers")
-def editmembers():
+
+# @app.route("/admin/editmembers")
+# def editmembers():
 
 
 
