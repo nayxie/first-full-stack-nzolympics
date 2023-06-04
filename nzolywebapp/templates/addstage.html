@@ -1,0 +1,40 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- eventinfo passed in, for display and reference to what stage info is added to -->
+<h2>Add an Event Stage to the chosen event</h2>
+
+<table>
+    <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
+    {% for event in eventinfo %}
+        <tr>
+            {% for entry in event %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<!-- send it to the url 
+    that updates the member and event information 
+    which then redirects to displaying the newly added data -->
+<form action="/admin/addtostages/{{ eventinfo[0][0] }}" method="post">
+    <label for="stagename">Stage Name:</label>
+    <select name="stagename">
+        <option value="Heat 1">Heat 1</option>
+        <option value="Qualification">Qualification</option>
+        <option value="Final">Final</option>
+    </select>
+    <label for="location">Location:</label>
+    <select name="location">
+        <option value="Genting Snow Park">Genting Snow Park</option>
+        <option value="Shougang">Shougang</option>
+        <option value="Other Locations">Other Locations</option>
+    </select>
+    <label for="stagedate">Stage Date:</label> 
+    <input type="date" name="stagedate" required/>
+    <label for="pointstoqualify">Points to Qualify:</label>
+    <input type="text" name="pointstoqualify" pattern="[0-9]+(\.[0-9])?" required/>
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
