@@ -194,6 +194,7 @@ def editMandE(memberId):
 
 @app.route("/admin/updateMandE", methods=["POST"])
 def updateMandE():
+    memberid = request.form.get("memberid")
     firstname = request.form.get("firstname").title()
     lastname = request.form.get("lastname").title()
     city = request.form.get("city")
@@ -201,25 +202,23 @@ def updateMandE():
     eventname = string.capwords(request.form.get("eventname"))
     sport = request.form.get("sport").title()
 
+    connection = getCursor()
+    connection.execute("UPDATE members SET FirstName = %s, LastName = %s, City = %s, Birthdate = %s WHERE MemberID = %s;",
+                   (firstname, lastname, city, birthdate, memberid))
+    
+    connection = getCursor()
+    connection.execute("SELECT TeamID FROM members WHERE MemberID = %s;", (memberid,))
+    teamid = connection.fetchall()[0][0]
+
+    connection = getCursor()
+    connection.execute("UPDATE teams SET TeamName = %s WHERE TeamID = %s;",(sport, teamid))
+
+    connection = getCursor()
+    connection.execute("UPDATE events SET EventName = %s, Sport = %s WHERE NZTeam = %s;", (eventname, sport, teamid))
 
     # - use re to validate user input
     
-    # create new entry in the teams table 
-    # name of sport is passed to TeamName
-    # get hold of the auto-incremented TeamID
-    connection = getCursor()
-    connection.execute("INSERT INTO teams (TeamName) VALUES (%s)", (sport,))
-    connection.execute("SELECT TeamID FROM teams")
-    teamid = connection.fetchall()[-1][0]
-    
-    # create new entry in the events table
-    connection = getCursor()
-    connection.execute("INSERT INTO events (EventName, Sport, NZTeam) VALUES (%s, %s, %s)", (eventname, sport, teamid))
 
-    # create new entry in the members table
-    connection = getCursor()
-    sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
-    connection.execute(sql, (teamid, firstname, lastname, city, birthdate))
 
     # redict to listmembers, where users can see the updated member information
     # and because the page is based on base.html, there's link to list events as well 
@@ -228,22 +227,56 @@ def updateMandE():
     return redirect("/listmembers")
 
 
-# now the funtion is working, but instead of updating, it creates a new entry
-# because it is redirected to the update member page 
-# change the update member page name to add members 
-# change add members to add 
-# add and addmembersandevents 
-# edit, editmembers, and updatemembers  
-
-
-#   page where user can edit all information of the chosen member, appended
-#   with memberID from edit page 
-#   similar template to addmembersandevents
-#   return redirect("/listmembers")
-
-# @app.route("/admin/editmembers")
-# def editmembers():
-
-
 # Add new event_stages.
+
+@app.route("/admin/displayevents")
+def displayevents():
+    connection = getCursor()
+    connection.execute("SELECT * FROM events;")
+    eventList = connection.fetchall()
+    return render_template("displayevents.html", eventlist = eventList)
+
+@app.route("/admin/addstage/<eventId>")
+def addstage(eventId):
+    connection = getCursor()
+    connection.execute("SELECT * FROM events WHERE EventID = %s;", (eventId,))
+    eventInfo = connection.fetchall()
+    return render_template("addstage.html", eventinfo = eventInfo)
+
+@app.route("/admin/addtostages/<eventId>", methods=["POST"])
+def addtostages(eventId):
+
+    stagename = request.form.get("stagename")
+    location = request.form.get("location")
+    stagedate = request.form.get("stagedate")
+    pointstoqualify = request.form.get("pointstoqualify")
+
+    # print(f"EventID is {eventId}")
+    # print(f"{stagename}, {location}, {stagedate}, {pointstoqualify}")
+
+    if stagename == "Heat 1" or stagename == "Qualification":
+        qualifying = 1 
+    elif stagename == "Final":
+        qualifying = 0
+    
+    connection = getCursor()
+    sql = "INSERT INTO event_stage (StageName, EventID, Location, \
+        StageDate, Qualifying, PointsToQualify) VALUES (%s, %s, %s, %s, %s, %s);"
+    connection.execute(sql, (stagename, eventId, location, stagedate, qualifying, pointstoqualify))
+
+    connection = getCursor()
+    connection.execute("SELECT * FROM event_stage;")
+    stageInfo = connection.fetchall()
+
+    return render_template("displaystages.html", stageinfo = stageInfo)
+
+
+
+
+    
+# here interprete qualifying 
+
+
+
+
 # Add scores for an event stage and position for a non-qualifying event stage
