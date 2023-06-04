@@ -229,12 +229,17 @@ def updateMandE():
 
 # Add new event_stages.
 
-@app.route("/admin/displayevents")
-def displayevents():
+@app.route("/admin/displayEandS")
+def displayEandS():
     connection = getCursor()
     connection.execute("SELECT * FROM events;")
     eventList = connection.fetchall()
-    return render_template("displayevents.html", eventlist = eventList)
+
+    connection = getCursor()
+    connection.execute("SELECT * FROM event_stage;")
+    stageList = connection.fetchall()
+
+    return render_template("displayEandS.html", eventlist = eventList, stagelist = stageList)
 
 @app.route("/admin/addstage/<eventId>")
 def addstage(eventId):
@@ -264,11 +269,7 @@ def addtostages(eventId):
         StageDate, Qualifying, PointsToQualify) VALUES (%s, %s, %s, %s, %s, %s);"
     connection.execute(sql, (stagename, eventId, location, stagedate, qualifying, pointstoqualify))
 
-    connection = getCursor()
-    connection.execute("SELECT * FROM event_stage;")
-    stageInfo = connection.fetchall()
-
-    return render_template("displaystages.html", stageinfo = stageInfo)
+    return redirect("/admin/displayEandS")
 
 
 
