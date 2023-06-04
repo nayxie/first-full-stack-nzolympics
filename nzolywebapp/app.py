@@ -49,11 +49,12 @@ def memberevent(memberId):
     # fetch a list of tuples with information of all future events 
     connection = getCursor()
     sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location \
-    FROM events e \
+    FROM members m \
+    RIGHT JOIN events e ON m.TeamID = e.NZTeam \
     RIGHT JOIN event_stage es ON e.EventID = es.EventID \
     LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID \
     WHERE es.StageID NOT IN (SELECT StageID FROM event_stage_results esr) \
-    AND esr.MemberID = %s;"
+    AND m.MemberID = %s;"
     connection.execute(sql, (memberId,))
     futureeventList = connection.fetchall()
 
@@ -255,6 +256,8 @@ def addtostages(eventId):
     location = request.form.get("location")
     stagedate = request.form.get("stagedate")
     pointstoqualify = request.form.get("pointstoqualify")
+    if pointstoqualify == "":
+        pointstoqualify = None
 
     # print(f"EventID is {eventId}")
     # print(f"{stagename}, {location}, {stagedate}, {pointstoqualify}")
