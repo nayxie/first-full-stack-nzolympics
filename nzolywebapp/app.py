@@ -126,44 +126,83 @@ def searchresult():
 
 # Add new members 
 
-@app.route("/admin/addMandE")
-def addMandE():
-    return render_template("addMandE.html")
+@app.route("/admin/displayteams")
+def displayteams():
+    connection = getCursor()
+    connection.execute("SELECT * FROM teams;")
+    teamList = connection.fetchall()
+    return render_template("displayteams.html", teamlist = teamList)
 
-@app.route("/admin/addtoMandE", methods=["POST"])
-def addtoMandE():
+@app.route("/admin/addmember/<teamId>")
+def addmember(teamId):
+    connection = getCursor()
+    connection.execute("SELECT * FROM teams WHERE TeamID = %s;", (teamId,))
+    teamInfo = connection.fetchall()
+    return render_template("addmember.html", teaminfo = teamInfo)
+
+@app.route("/admin/addtomembers/<teamId>", methods=["POST"])
+def addtomembers(teamId):
     firstname = request.form.get("firstname").title()
     lastname = request.form.get("lastname").title()
     city = request.form.get("city")
     birthdate = request.form.get("birthdate")
-    eventname = string.capwords(request.form.get("eventname"))
-    sport = request.form.get("sport").title()
-
 
     # - use re to validate user input
-    
-    # create new entry in the teams table 
-    # name of sport is passed to TeamName
-    # get hold of the auto-incremented TeamID
-    connection = getCursor()
-    connection.execute("INSERT INTO teams (TeamName) VALUES (%s)", (sport,))
-    connection.execute("SELECT TeamID FROM teams")
-    teamid = connection.fetchall()[-1][0]
-    
-    # create new entry in the events table
-    connection = getCursor()
-    connection.execute("INSERT INTO events (EventName, Sport, NZTeam) VALUES (%s, %s, %s)", (eventname, sport, teamid))
 
-    # create new entry in the members table
     connection = getCursor()
     sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
-    connection.execute(sql, (teamid, firstname, lastname, city, birthdate))
-
-    # redict to listmembers, where users can see the updated member information
-    # and because the page is based on base.html, there's link to list events as well 
-    # where users can click and see the updated event information 
-
+    connection.execute(sql, (teamId, firstname, lastname, city, birthdate))
     return redirect("/listmembers")
+
+
+
+
+
+
+
+
+
+
+# @app.route("/admin/addMandE")
+# def addMandE():
+#     return render_template("addMandE.html")
+
+# @app.route("/admin/addtoMandE", methods=["POST"])
+# def addtoMandE():
+#     firstname = request.form.get("firstname").title()
+#     lastname = request.form.get("lastname").title()
+#     city = request.form.get("city")
+#     birthdate = request.form.get("birthdate")
+#     eventname = string.capwords(request.form.get("eventname"))
+#     sport = request.form.get("sport").title()
+
+
+#     # - use re to validate user input
+    
+#     # create new entry in the teams table 
+#     # name of sport is passed to TeamName
+#     # get hold of the auto-incremented TeamID
+#     connection = getCursor()
+#     connection.execute("INSERT INTO teams (TeamName) VALUES (%s)", (sport,))
+#     connection.execute("SELECT TeamID FROM teams")
+#     teamid = connection.fetchall()[-1][0]
+    
+#     # create new entry in the events table
+#     connection = getCursor()
+#     connection.execute("INSERT INTO events (EventName, Sport, NZTeam) VALUES (%s, %s, %s)", (eventname, sport, teamid))
+
+#     # create new entry in the members table
+#     connection = getCursor()
+#     sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
+#     connection.execute(sql, (teamid, firstname, lastname, city, birthdate))
+
+#     # redict to listmembers, where users can see the updated member information
+#     # and because the page is based on base.html, there's link to list events as well 
+#     # where users can click and see the updated event information 
+
+#     return redirect("/listmembers")
+
+
 
 
 # and edit the details of existing members.
@@ -272,6 +311,9 @@ def addtostages(eventId):
         StageDate, Qualifying, PointsToQualify) VALUES (%s, %s, %s, %s, %s, %s);"
     connection.execute(sql, (stagename, eventId, location, stagedate, qualifying, pointstoqualify))
 
+
+
+
     return redirect("/admin/displayEandS")
 
 
@@ -296,8 +338,8 @@ def displaySandR():
 @app.route("/admin/addresult/<stageId>/<memberId>")
 def addresult(stageId, memberId):
 
-    print(stageId)
-    print(memberId)
+    # print(stageId)
+    # print(memberId)
 
 
     connection = getCursor()
@@ -307,6 +349,7 @@ def addresult(stageId, memberId):
 
 @app.route("/admin/addtoresults/<stageId>/<memberId>", methods=["POST"])
 def addtoresults(stageId, memberId):
+    
     print(stageId)
     print(memberId)
 
@@ -335,3 +378,8 @@ def addtoresults(stageId, memberId):
     # return redirect("/admin/displayEandS")
     
 
+# <br>
+#     <label for="eventname">Event Name:</label>
+#     <input type="text" name="eventname" pattern="[a-zA-Z0-9\s']+" required/>
+#     <label for="sport">Sport:</label>
+#     <input type="text" name="sport" pattern="[a-zA-Z\s]+" required/>
