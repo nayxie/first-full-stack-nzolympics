@@ -304,7 +304,18 @@ def updatemember(memberId):
 #     return redirect("/listmembers")
 
 
-# Add new event_stages.
+
+
+😆😆😆
+# Add new events and event_stages.
+
+# - display teams 
+# - choose a team to add event for 
+# - display team info for the chosen team
+# - add an event and a stage 
+# - insert into db 
+# - display events and stages 
+
 
 @app.route("/admin/displayEandS")
 def displayEandS():
