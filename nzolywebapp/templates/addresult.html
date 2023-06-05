@@ -17,7 +17,7 @@
 <!-- send it to the url 
     that updates the member and event information 
     which then redirects to displaying the newly added data -->
-<form action="/admin/addtoresults/{{ stageinfo[0][0] }}" method="post">
+<form action="/admin/addtoresults/{{ stageinfo[0][0] }}/memberid" method="post">
     <label for="pointsscored">Points Scored:</label>
     <input type="text" name="pointsscored" pattern="[0-9]+(\.[0-9])?" required/>
     <label for="position">Position:</label>
