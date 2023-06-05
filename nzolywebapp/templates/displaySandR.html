@@ -6,16 +6,17 @@
 <h3>Click on stage ID to add a result to</h3>
 
 <table>
-    <tr><th>Stage ID</th><th>Stage Name</th><th>Location</th><th>Stage Date</th><th>Points To Qualify</th><th>Points Scored</th><th>Position</th></tr>
+    <tr><th>Member ID</th><th>Stage ID</th><th>Stage Name</th><th>Location</th><th>Stage Date</th><th>Points To Qualify</th><th>Points Scored</th><th>Position</th></tr>
     {% for stage in stagelist %}
         <tr>
-            <td><a href="/admin/addresult/{{ stage[0] }}">{{ stage[0] }}</a></td>
-            <td>{{ stage[1] }}</td>
+            <td>{{ stage[0] }}</td>
+            <td><a href="/admin/addresult/{{ stage[1] }}/{{ stage[0] }}">{{ stage[1] }}</a></td>
             <td>{{ stage[2] }}</td>
             <td>{{ stage[3] }}</td>
             <td>{{ stage[4] }}</td>
             <td>{{ stage[5] }}</td>
             <td>{{ stage[6] }}</td>
+            <td>{{ stage[7] }}</td>
         </tr>
     {% endfor %}
 </table>
