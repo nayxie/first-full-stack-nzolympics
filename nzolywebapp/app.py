@@ -306,7 +306,7 @@ def updatemember(memberId):
 
 
 
-😆😆😆
+# 😆😆😆
 # Add new events and event_stages.
 
 # - display teams 
