@@ -1,0 +1,17 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- {{ teamlist }}-->
+<h2>Team List</h2>
+<h3>Click on teamid to add a member to</h3>
+
+<table>
+    <tr><th>Team ID</th><th>Team Name</th></tr>
+    {% for team in teamlist %}
+        <tr>
+            <td><a href="/admin/addmember/{{ team[0] }}">{{ team[0] }}</a></td>
+            <td>{{ team[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
