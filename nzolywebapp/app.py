@@ -284,7 +284,7 @@ def displaySandR():
     stageList = connection.fetchall()
 
     connection = getCursor()
-    sql = "SELECT es.StageID, es.StageName, es.Location, es.StageDate, \
+    sql = "SELECT esr.MemberID, es.StageID, es.StageName, es.Location, es.StageDate, \
         es.PointsToQualify, esr.PointsScored, esr.Position \
         FROM event_stage es \
         LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID;"
@@ -293,25 +293,34 @@ def displaySandR():
     return render_template("displaySandR.html", stagelist = stageList)
 
 
-@app.route("/admin/addresult/<stageId>")
-def displaySandR(stageId):
+@app.route("/admin/addresult/<stageId>/<memberId>")
+def addresult(stageId, memberId):
+
+    print(stageId)
+    print(memberId)
+
+
     connection = getCursor()
     connection.execute("SELECT * FROM event_stage WHERE StageID = %s;", (stageId,))
     stageInfo = connection.fetchall()
-    return render_template("addresult.html", stageinfo = stageInfo)
+    return render_template("addresult.html", stageinfo = stageInfo, memberid = memberId)
 
-@app.route("/admin/addtoresults/<stageId>", methods=["POST"])
-def addtoresults(stageId):
-    pointsscored = request.form.get("pointsscored")
-    position = request.form.get("position")
-    if position == "1":
-        position = 1
-    elif position == "2":
-        position = 2 
-    elif position == "3":
-        position = 3
-    elif position == "None":
-        position = None
+@app.route("/admin/addtoresults/<stageId>/<memberId>", methods=["POST"])
+def addtoresults(stageId, memberId):
+    print(stageId)
+    print(memberId)
+
+
+#     pointsscored = request.form.get("pointsscored")
+#     position = request.form.get("position")
+#     if position == "1":
+#         position = 1
+#     elif position == "2":
+#         position = 2 
+#     elif position == "3":
+#         position = 3
+#     elif position == "None":
+#         position = None
 
 
     # how do you get hold of MemberID
