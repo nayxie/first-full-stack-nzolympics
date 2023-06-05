@@ -1,0 +1,36 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- stageinfo passed in, for display and reference to what result is added to -->
+<h2>Add a result to the chosen stage</h2>
+
+<table>
+    <tr><th>Stage ID</th><th>Stage Name</th><th>Event ID</th><th>Location</th><th>Stage Date</th><th>Qualifying</th><th>Points To Qualify</th></tr>
+    {% for stage in stageinfo %}
+        <tr>
+            {% for entry in stage %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<!-- send it to the url 
+    that updates the member and event information 
+    which then redirects to displaying the newly added data -->
+<form action="/admin/addtoresults/{{ stageinfo[0][0] }}" method="post">
+    <label for="pointsscored">Points Scored:</label>
+    <input type="text" name="pointsscored" pattern="[0-9]+(\.[0-9])?" required/>
+    <label for="position">Position:</label>
+    <select name="position">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="None">None</option>
+
+    </select>
+    
+    
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
