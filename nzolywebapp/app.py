@@ -124,6 +124,15 @@ def searchresult():
     return render_template("searchresult.html", memberlist = memberList, eventlist = eventList)
 
 
+
+
+
+
+
+
+
+
+
 # Add new members 
 
 @app.route("/admin/displayteams")
@@ -154,8 +163,36 @@ def addtomembers(teamId):
     connection.execute(sql, (teamId, firstname, lastname, city, birthdate))
     return redirect("/listmembers")
 
+# and edit the details of existing members
 
+@app.route("/admin/displaymembers")
+def displaymembers():
+    connection = getCursor()
+    connection.execute("SELECT * FROM members;")
+    memberList = connection.fetchall()
+    return render_template("displaymembers.html", memberlist = memberList)
 
+@app.route("/admin/editmember/<memberId>")
+def editmember(memberId):
+    connection = getCursor()
+    connection.execute("SELECT * FROM members WHERE MemberID = %s;", (memberId,))
+    memberInfo = connection.fetchall()
+    return render_template("editmember.html", memberinfo = memberInfo)
+
+@app.route("/admin/updatemember/<memberId>", methods=["POST"])
+def updatemember(memberId):
+    firstname = request.form.get("firstname").title()
+    lastname = request.form.get("lastname").title()
+    city = request.form.get("city")
+    birthdate = request.form.get("birthdate")
+
+    # - use re to validate user input
+
+    connection = getCursor()
+    connection.execute("UPDATE members SET FirstName = %s, LastName = %s, City = %s, Birthdate = %s WHERE MemberID = %s;",
+                   (firstname, lastname, city, birthdate, memberId))
+    return redirect("/listmembers")
+    
 
 
 
@@ -210,61 +247,61 @@ def addtomembers(teamId):
 # to another page where user can edit all information of the chosen 
 # member, similar template to memberlist  
 
-@app.route("/admin/displayMandE")
-def displayMandE():
-    connection = getCursor()
-    connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
-                       e.EventName, e.Sport FROM members m \
-                       LEFT JOIN events e ON m.TeamID = e.NZTeam;")
-    memberList = connection.fetchall()
-    return render_template("displayMandE.html", memberlist = memberList)
+# @app.route("/admin/displayMandE")
+# def displayMandE():
+#     connection = getCursor()
+#     connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
+#                        e.EventName, e.Sport FROM members m \
+#                        LEFT JOIN events e ON m.TeamID = e.NZTeam;")
+#     memberList = connection.fetchall()
+#     return render_template("displayMandE.html", memberlist = memberList)
 
-@app.route("/admin/editMandE/<memberId>")    
-def editMandE(memberId):
-    connection = getCursor()
-    connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
-                       e.EventName, e.Sport FROM members m \
-                       LEFT JOIN events e ON m.TeamID = e.NZTeam \
-                       WHERE memberID = %s;", (memberId,))
-    memberInfo = connection.fetchall()
-    return render_template("editMandE.html", memberinfo = memberInfo) 
-
-
+# @app.route("/admin/editMandE/<memberId>")    
+# def editMandE(memberId):
+#     connection = getCursor()
+#     connection.execute("SELECT m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
+#                        e.EventName, e.Sport FROM members m \
+#                        LEFT JOIN events e ON m.TeamID = e.NZTeam \
+#                        WHERE memberID = %s;", (memberId,))
+#     memberInfo = connection.fetchall()
+#     return render_template("editMandE.html", memberinfo = memberInfo) 
 
 
-@app.route("/admin/updateMandE", methods=["POST"])
-def updateMandE():
-    memberid = request.form.get("memberid")
-    firstname = request.form.get("firstname").title()
-    lastname = request.form.get("lastname").title()
-    city = request.form.get("city")
-    birthdate = request.form.get("birthdate")
-    eventname = string.capwords(request.form.get("eventname"))
-    sport = request.form.get("sport").title()
 
-    connection = getCursor()
-    connection.execute("UPDATE members SET FirstName = %s, LastName = %s, City = %s, Birthdate = %s WHERE MemberID = %s;",
-                   (firstname, lastname, city, birthdate, memberid))
+
+# @app.route("/admin/updateMandE", methods=["POST"])
+# def updateMandE():
+#     memberid = request.form.get("memberid")
+#     firstname = request.form.get("firstname").title()
+#     lastname = request.form.get("lastname").title()
+#     city = request.form.get("city")
+#     birthdate = request.form.get("birthdate")
+#     eventname = string.capwords(request.form.get("eventname"))
+#     sport = request.form.get("sport").title()
+
+#     connection = getCursor()
+#     connection.execute("UPDATE members SET FirstName = %s, LastName = %s, City = %s, Birthdate = %s WHERE MemberID = %s;",
+#                    (firstname, lastname, city, birthdate, memberid))
     
-    connection = getCursor()
-    connection.execute("SELECT TeamID FROM members WHERE MemberID = %s;", (memberid,))
-    teamid = connection.fetchall()[0][0]
+#     connection = getCursor()
+#     connection.execute("SELECT TeamID FROM members WHERE MemberID = %s;", (memberid,))
+#     teamid = connection.fetchall()[0][0]
 
-    connection = getCursor()
-    connection.execute("UPDATE teams SET TeamName = %s WHERE TeamID = %s;",(sport, teamid))
+#     connection = getCursor()
+#     connection.execute("UPDATE teams SET TeamName = %s WHERE TeamID = %s;",(sport, teamid))
 
-    connection = getCursor()
-    connection.execute("UPDATE events SET EventName = %s, Sport = %s WHERE NZTeam = %s;", (eventname, sport, teamid))
+#     connection = getCursor()
+#     connection.execute("UPDATE events SET EventName = %s, Sport = %s WHERE NZTeam = %s;", (eventname, sport, teamid))
 
-    # - use re to validate user input
+#     # - use re to validate user input
     
 
 
-    # redict to listmembers, where users can see the updated member information
-    # and because the page is based on base.html, there's link to list events as well 
-    # where users can click and see the updated event information 
+#     # redict to listmembers, where users can see the updated member information
+#     # and because the page is based on base.html, there's link to list events as well 
+#     # where users can click and see the updated event information 
 
-    return redirect("/listmembers")
+#     return redirect("/listmembers")
 
 
 # Add new event_stages.
