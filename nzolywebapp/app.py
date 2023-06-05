@@ -275,12 +275,54 @@ def addtostages(eventId):
     return redirect("/admin/displayEandS")
 
 
-
-
-    
-# here interprete qualifying 
-
-
-
-
 # Add scores for an event stage and position for a non-qualifying event stage
+
+@app.route("/admin/displaySandR")
+def displaySandR():
+    connection = getCursor()
+    connection.execute("SELECT * FROM event_stage;")
+    stageList = connection.fetchall()
+
+    connection = getCursor()
+    sql = "SELECT es.StageID, es.StageName, es.Location, es.StageDate, \
+        es.PointsToQualify, esr.PointsScored, esr.Position \
+        FROM event_stage es \
+        LEFT JOIN event_stage_results esr ON es.StageID = esr.StageID;"
+    connection.execute(sql)
+    stageList = connection.fetchall()
+    return render_template("displaySandR.html", stagelist = stageList)
+
+
+@app.route("/admin/addresult/<stageId>")
+def displaySandR(stageId):
+    connection = getCursor()
+    connection.execute("SELECT * FROM event_stage WHERE StageID = %s;", (stageId,))
+    stageInfo = connection.fetchall()
+    return render_template("addresult.html", stageinfo = stageInfo)
+
+@app.route("/admin/addtoresults/<stageId>", methods=["POST"])
+def addtoresults(stageId):
+    pointsscored = request.form.get("pointsscored")
+    position = request.form.get("position")
+    if position == "1":
+        position = 1
+    elif position == "2":
+        position = 2 
+    elif position == "3":
+        position = 3
+    elif position == "None":
+        position = None
+
+
+    # how do you get hold of MemberID
+
+
+
+    # connection = getCursor()
+    # sql = "INSERT INTO event_stage_results (StageID, EventID, Location, \
+    #     StageDate, Qualifying, PointsToQualify) VALUES (%s, %s, %s, %s, %s, %s);"
+    # connection.execute(sql, (stagename, eventId, location, stagedate, qualifying, pointstoqualify))
+
+    # return redirect("/admin/displayEandS")
+    
+
