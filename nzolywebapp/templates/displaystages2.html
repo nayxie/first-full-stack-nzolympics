@@ -1,0 +1,23 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- stagelist: es.StageID, es.StageName, es.Location, es.StageDate, \
+        es.PointsToQualify, esr.PointsScored, esr.Position-->
+<h2>stage List</h2>
+<h3>click on stage id to add a result to</h3>
+
+<table>
+    <tr><th>Stage ID</th><th>Stage Name</th><th>Event ID</th><th>Location</th><th>Stage Date</th><th>Qualifying</th><th>Points To Qualify</th></tr>
+    {% for stage in stagelist %}
+        <tr>
+            <td><a href="/admin/addresult/{{ stage[0] }}/{{ memberid }}">{{ stage[0] }}</a></td>
+            <td>{{ stage[1] }}</td>
+            <td>{{ stage[2] }}</td>
+            <td>{{ stage[3] }}</td>
+            <td>{{ stage[4] }}</td>
+            <td>{{ stage[5] }}</td>
+            <td>{{ stage[6] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
