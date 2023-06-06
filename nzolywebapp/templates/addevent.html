@@ -1,0 +1,29 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- code in here to -->
+<h2>Add an event</h2>
+
+
+<!-- send it to the url 
+    that updates the member and event information 
+    which then redirects to displaying the newly added data -->
+<form action="/admin/addtoevents" method="post">
+    <label for="eventname">Event Name:</label>
+    <input type="text" name="eventname" pattern="[a-zA-Z0-9\s']+" required/>
+    <label for="sport">Sport:</label>
+    <input type="text" name="sport" pattern="[a-zA-Z\s]+" required/>
+    
+    <label for="nzteam">Select A Team:</label>
+    <select name="nzteam" required>
+        {% for teamid in teamidlist %}
+            {% for entry in teamid %}
+            <option value="{{ entry }}">{{ entry }}</option>
+            {% endfor %}  
+        {% endfor %}
+        <option value="none">None</option>
+    </select>
+
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
