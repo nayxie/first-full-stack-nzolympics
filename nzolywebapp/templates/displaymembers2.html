@@ -1,0 +1,21 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- code in here to display a list of members-->
+<h2>member List</h2>
+<h3>Click on Member ID to add a result to</h3>
+
+<table>
+    <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
+    {% for member in memberlist %}
+        <tr>
+            <td><a href="/admin/displaystages2/{{ member[0] }}">{{ member[0] }}</a></td>
+            <td>{{ member[1] }}</td>
+            <td>{{ member[2] }}</td>
+            <td>{{ member[3] }}</td>
+            <td>{{ member[4] }}</td>
+            <td>{{ member[5] }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
