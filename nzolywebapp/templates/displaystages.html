@@ -1,0 +1,18 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- stagelist: es.StageID, es.StageName, es.Location, es.StageDate, \
+        es.PointsToQualify, esr.PointsScored, esr.Position-->
+<h2>stage List</h2>
+
+<table>
+    <tr><th>Stage ID</th><th>Stage Name</th><th>Event ID</th><th>Location</th><th>Stage Date</th><th>Qualifying</th><th>Points To Qualify</th></tr>
+    {% for stage in stagelist %}
+        <tr>
+            {% for entry in stage %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
