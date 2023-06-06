@@ -86,13 +86,6 @@ def memberevent(memberId):
             else:
                 item[-1] = "Qualified"
     
-# line 84, in memberevent
-#     if item[-2] >= item[-3]:
-#        ^^^^^^^^^^^^^^^^^^^^
-# TypeError: '>=' not supported between instances of 'NoneType' and 'float'
-
-# fix this, so that if stagename == final, pointstoqualify has to be left blank, otherwise,  pointstoqualify has to be filled in 
-
     for item in pasteventList:
         del item[-2]
         del item[-3]
@@ -234,6 +227,9 @@ def addstage(eventId):
     eventInfo = connection.fetchall()
     return render_template("addstage.html", eventinfo = eventInfo)
 
+
+
+
 @app.route("/admin/addtostages/<eventId>", methods=["POST"])
 def addtostages(eventId):
 
@@ -241,13 +237,12 @@ def addtostages(eventId):
     location = request.form.get("location")
     stagedate = request.form.get("stagedate")
     pointstoqualify = request.form.get("pointstoqualify")
-    if pointstoqualify == "":
-        pointstoqualify = None
 
     if stagename == "Heat 1" or stagename == "Qualification":
-        qualifying = 1 
+        qualifying = 1
     elif stagename == "Final":
         qualifying = 0
+        pointstoqualify = None
     
     connection = getCursor()
     sql = "INSERT INTO event_stage (StageName, EventID, Location, \
@@ -303,6 +298,12 @@ def addtoresults(stageId, memberId):
     if position == "none":
         position = None
     
+    # validate input here 
+    # if final, position has to be recorded 
+    # if it is qualifying, position is None   
+
+
+
     connection = getCursor()
     sql = "INSERT INTO event_stage_results (StageID, MemberID, PointsScored, Position) \
         VALUES (%s, %s, %s, %s);"
@@ -314,3 +315,20 @@ def addtoresults(stageId, memberId):
 
     return render_template("displayresults.html", resultlist = resultList)
     
+# Show the following reports
+# - Number of Gold, Silver and Bronze Medals and who has won them.
+# - Members listed grouped into teams, with members ordered by 
+#   last name then first name within each team.
+
+
+
+# number of gold: 
+
+# SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1 ;
+
+# member names who won gold:
+
+# SELECT m.FirstName, m.LastName FROM members m 
+# INNER JOIN event_stage_results esr 
+# ON m.MemberID = esr.MemberID   
+# WHERE esr.Position = 1; 
