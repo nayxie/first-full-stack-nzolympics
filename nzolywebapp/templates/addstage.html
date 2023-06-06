@@ -1,7 +1,7 @@
 {% extends "adminbase.html" %}
 {% block content %}
 <!-- eventinfo passed in, for display and reference to what stage info is added to -->
-<h2>Add an Event Stage to the chosen event</h2>
+<h2>Add a Stage to the chosen event</h2>
 
 <table>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
@@ -34,6 +34,7 @@
     <input type="date" name="stagedate" required/>
     <label for="pointstoqualify">Points to Qualify:</label>
     <input type="text" name="pointstoqualify" pattern="[0-9]+(\.[0-9])?"/>
+    
     <input type="submit" value="Submit">
 </form>
 
