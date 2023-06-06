@@ -91,6 +91,8 @@ def memberevent(memberId):
 #        ^^^^^^^^^^^^^^^^^^^^
 # TypeError: '>=' not supported between instances of 'NoneType' and 'float'
 
+# fix this, so that if stagename == final, pointstoqualify has to be left blank, otherwise,  pointstoqualify has to be filled in 
+
     for item in pasteventList:
         del item[-2]
         del item[-3]
