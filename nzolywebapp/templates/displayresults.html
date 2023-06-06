@@ -1,0 +1,17 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- -->
+<h2>result List</h2>
+
+<table>
+    <tr><th>Result ID</th><th>Stage ID</th><th>Member ID</th><th>Points Scored</th><th>Position</th></tr>
+    {% for result in resultlist %}
+        <tr>
+            {% for entry in result %}
+                <td>{{entry}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
