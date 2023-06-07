@@ -14,6 +14,9 @@ t.TeamID, t.TeamName, COUNT(m.TeamID)-->
         <td>{{ team[0] }}</td>
         <td>{{ team[1] }}</td>
         <td>{{ team[2] }}</td>
+            {% for entry in teammembers[index-1] %}
+                <td>{{entry}}</td>
+            {% endfor %}
     </tr>
     {% endfor %}
     
