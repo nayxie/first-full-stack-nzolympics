@@ -406,6 +406,12 @@ def reportteams():
     # concatenate first and last names 
     teamMembers = [[f"{name[0]} {name[1]}" for name in team] for team in teamMembers]
 
+    # [['Tiarn Collins', 'Mm Mm', 'Zoi Sadowski-Synnott'], 
+    # [], 
+    # ['Ben Barclay', 'Anja Barugh', 'Finn Bilous', 'Margaux Hackett', 'Nico Porteous'], 
+    # ['Campbell Wright'], 
+    # ['Peter Michael']]
+
     return render_template("reportteams.html", teamnum = teamNum, teamlist = teamList, teammembers = teamMembers)
 
 
