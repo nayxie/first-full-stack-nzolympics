@@ -317,18 +317,101 @@ def addtoresults(stageId, memberId):
     
 # Show the following reports
 # - Number of Gold, Silver and Bronze Medals and who has won them.
+
+@app.route("/admin/reportmedals")
+def reportmedals():
+
+    # total number of gold: 
+    connection = getCursor()
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
+    goldNum = connection.fetchall()[0][0]
+
+    connection = getCursor()
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 2;")
+    silverNum = connection.fetchall()[0][0]
+
+    connection = getCursor()
+    connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 3;")
+    bronzeNum = connection.fetchall()[0][0]
+
+    # number of gold by member names:
+    connection = getCursor()
+    connection.execute("SELECT CONCAT(m.FirstName, ' ', m.LastName), COUNT(esr.Position) \
+        FROM members m INNER JOIN event_stage_results esr \
+        ON m.MemberID = esr.MemberID \
+        WHERE Position = 1 \
+        GROUP BY CONCAT(m.FirstName, ' ', m.LastName);")
+    goldwinnerList = connection.fetchall()
+
+    connection = getCursor()
+    connection.execute("SELECT CONCAT(m.FirstName, ' ', m.LastName), COUNT(esr.Position) \
+        FROM members m INNER JOIN event_stage_results esr \
+        ON m.MemberID = esr.MemberID \
+        WHERE Position = 2 \
+        GROUP BY CONCAT(m.FirstName, ' ', m.LastName);")
+    silverwinnerList = connection.fetchall()
+
+    connection = getCursor()
+    connection.execute("SELECT CONCAT(m.FirstName, ' ', m.LastName), COUNT(esr.Position) \
+        FROM members m INNER JOIN event_stage_results esr \
+        ON m.MemberID = esr.MemberID \
+        WHERE Position = 3 \
+        GROUP BY CONCAT(m.FirstName, ' ', m.LastName);")
+    bronzewinnerList = connection.fetchall()
+
+    return render_template("reportmedals.html", goldnum = goldNum, \
+        silvernum = silverNum, bronzenum = bronzeNum, goldwinnerlist = goldwinnerList, \
+        silverwinnerlist = silverwinnerList, bronzewinnerlist = bronzewinnerList)
+
 # - Members listed grouped into teams, with members ordered by 
 #   last name then first name within each team.
 
+# Team report 
+# total number of teams:
+# # table here:
+# columns: team id, team name, number of members, member names (ordered)
+
+@app.route("/admin/reportteams")
+def reportteams():
+    # total number of teams:
+    connection = getCursor()
+    connection.execute("SELECT COUNT(TeamID) FROM teams;")
+    teamNum = connection.fetchall()[0][0]
+
+    # teamlist, containing number of members in each team 
+    connection = getCursor()
+    sql = "SELECT t.TeamID, t.TeamName, COUNT(m.TeamID)\
+            FROM teams t LEFT JOIN members m \
+            ON t.TeamID = m.TeamID \
+            GROUP BY t.TeamID, t.TeamName;"
+    connection.execute(sql)
+    teamList = connection.fetchall()
+
+    # member names in each team, ordered: 
+    connection = getCursor()
+    connection.execute("SELECT TeamID FROM teams;")
+    teamidList = connection.fetchall()
+
+    teamMembers= []
+    for idlist in teamidList:
+        for id in idlist:
+            connection = getCursor()
+            connection.execute("SELECT FirstName, LastName FROM members WHERE TeamID = %s;", (id,))
+            teamMembers.append(connection.fetchall())
+    
+    # use sort and lambda to re-order
+    for team in teamMembers:
+        team.sort(key=lambda name: name[-1][0])
+
+    # concatenate first and last names 
+    teamMembers = [[f"{name[0]} {name[1]}" for name in team] for team in teamMembers]
+
+    return render_template("reportteams.html", teamnum = teamNum, teamlist = teamList, teammembers = teamMembers)
 
 
-# number of gold: 
 
-# SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1 ;
 
-# member names who won gold:
 
-# SELECT m.FirstName, m.LastName FROM members m 
-# INNER JOIN event_stage_results esr 
-# ON m.MemberID = esr.MemberID   
-# WHERE esr.Position = 1; 
+
+
+
