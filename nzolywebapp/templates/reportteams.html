@@ -1,0 +1,23 @@
+{% extends "adminbase.html" %}
+{% block content %}
+<!-- teamnum, teamlist, teammembers
+t.TeamID, t.TeamName, COUNT(m.TeamID)-->
+
+<h2>Team Report</h2>
+
+<h3>Total number of teams: {{ teamnum }} </h3>
+<table>
+    <tr><th>Team ID</th><th>Team Name</th><th>Number of Members</th><th>Members</th></tr>
+    {% for team in teamlist %}
+    {% set index = loop.index %}
+    <tr>
+        <td>{{ team[0] }}</td>
+        <td>{{ team[1] }}</td>
+        <td>{{ team[2] }}</td>
+    </tr>
+    {% endfor %}
+    
+</table>
+
+
+{% endblock %}
