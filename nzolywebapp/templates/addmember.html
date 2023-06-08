@@ -1,7 +1,12 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- code in here to -->
-<h2>Add a Member to the chosen team</h2>
+<!-- teaminfo passed in from server -->
+<!-- display the chosen team information for reference -->
+<!-- collect all form information from browser
+    and send it off by POST, along with teamid 
+    to the URL that will add the data to the members table -->
+
+<h2>Add A Member To The Chosen Team</h2>
 
 <table>
     <tr><th>Team ID</th><th>Team Name</th></tr>
@@ -14,11 +19,6 @@
     {% endfor %}
 </table>
 
-
-
-<!-- send it to the url 
-    that updates the member and event information 
-    which then redirects to displaying the newly added data -->
 <form action="/admin/addtomembers/{{ teaminfo[0][0] }}" method="post">
     <label for="firstname">First Name:</label>
     <input type="text" name="firstname" pattern="[a-zA-Z]+" required/>
