@@ -1,8 +1,12 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- stageinfo passed in, for display and reference to what result is added to -->
+<!-- memberinfo，stageinfo passed in from server -->
+<!-- display memberinfo and stageinfo for reference -->
+<!-- collect all form information from browser
+    and send it off by POST, along with stageid and memberid 
+    to the URL that will add the data to the results table -->
 
-<h2>Add a result to the chosen member and stage</h2>
+<h2>Add A Result To The Chosen Member And Stage</h2>
 
 <table>
     <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
@@ -26,7 +30,6 @@
     {% endfor %}
 </table>
 
-
 <form action="/admin/addtoresults/{{ stageinfo[0][0] }}/{{ memberinfo[0][0] }}" method="post">
     <label for="pointsscored">Points Scored:</label>
     <input type="text" name="pointsscored" pattern="[0-9]+(\.[0-9])?" required/>
@@ -42,8 +45,6 @@
         {% endif %}
     </select>
 
-    
-    
     <input type="submit" value="Submit">
 </form>
 
