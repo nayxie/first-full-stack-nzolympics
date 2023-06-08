@@ -1,8 +1,11 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- code in here to display a list of members-->
-<h2>member List</h2>
-<h3>Click on Member ID to Edit Information</h3>
+<!-- memberlist passed in from server for display -->
+<!-- append memberid to the URL on click which updates  
+    information of the chosen id -->
+
+<h2>Member List</h2>
+<h3>Click On Member ID To Edit Information</h3>
 
 <table>
     <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
