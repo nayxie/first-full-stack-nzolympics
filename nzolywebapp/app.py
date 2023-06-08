@@ -9,6 +9,7 @@ import mysql.connector
 from mysql.connector import FieldType
 import connect
 
+# import string for the capwords() method for eventname
 import string
 
 app = Flask(__name__)
@@ -29,16 +30,24 @@ def getCursor():
 def home():
     return render_template("base.html")
 
+# --- list members ---
+# get hold of all members who are in a team
+# return memberlist to the teamplate
 @app.route("/listmembers")
 def listmembers():
     connection = getCursor()
-    # use join to get hold of team names
+    # inner join members and teams to get hold of team names
+    # and select all members who have got a team
     sql = "SELECT m.MemberID, t.TeamName, m.FirstName, m.LastName, m.City, m.Birthdate \
-    FROM members m LEFT JOIN teams t ON m.TeamID = t.TeamID;"
+    FROM members m INNER JOIN teams t ON m.TeamID = t.TeamID;"
     connection.execute(sql)
     memberList = connection.fetchall()
     return render_template("memberlist.html", memberlist = memberList)    
 
+# --- list future and past events ---
+# memberId passed in from browser
+# get hold of all future and past events, if any, for that memberId
+# return the ID, name, and two event lists for the member to the template   
 @app.route("/memberevent/<memberId>")
 def memberevent(memberId):
     connection = getCursor()
@@ -47,6 +56,7 @@ def memberevent(memberId):
     memberName = connection.fetchall()[0][0]
 
     # fetch a list of tuples with information of all future events 
+    # for that memberId
     connection = getCursor()
     sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location \
     FROM members m \
@@ -59,6 +69,7 @@ def memberevent(memberId):
     futureeventList = connection.fetchall()
 
     # fetch a list of tuples with information of all past events 
+    # for that memberId
     connection = getCursor()
     sql = "SELECT e.EventName, es.StageDate, es.StageName, es.Location, \
         esr.PointsScored, es.PointsToQualify, esr.Position \
@@ -69,8 +80,9 @@ def memberevent(memberId):
     connection.execute(sql, (memberId,))
     pasteventList = connection.fetchall()
 
-    # convert all tuples to lists in pasteventList to prepare for interpretation of scores and positions 
-    # Depending on StageName, modify last values accordingly
+    # convert all tuples to lists in pasteventList 
+    # to prepare for interpretation of scores and positions 
+    # depending on StageName, modify last values accordingly
     pasteventList = [list(item) for item in pasteventList]
     for item in pasteventList:
         if item[2] == "Final":
@@ -93,7 +105,9 @@ def memberevent(memberId):
     return render_template("memberevent.html", memberid = memberId, membername = memberName, 
                            futureeventlist = futureeventList, pasteventlist = pasteventList)
 
-
+# --- list events ---
+# get hold of all events 
+# return eventlist
 @app.route("/listevents")
 def listevents():
     connection = getCursor()
@@ -101,15 +115,22 @@ def listevents():
     eventList = connection.fetchall()
     return render_template("eventlist.html", eventlist = eventList)
 
-# add "/admin" route, share the same template as "base.html"
+# --- admin route ---
+# home page for all the functions below
+# including adding, editing, updating, and reporting 
 @app.route("/admin")
 def adminhome():
     return render_template("adminbase.html")
 
+# --- search members and events ---
 @app.route("/admin/search")
 def search():
     return render_template("search.html")
 
+# request the search term from browser, by way of the POST method 
+# use f-string and %, the wildcard symbol, for partial matches
+# select from both members and events
+# return results in two seperate lists
 @app.route("/admin/search/result", methods=["POST"])
 def searchresult():
     searchterm = request.form.get("searchentry")
@@ -123,11 +144,9 @@ def searchresult():
     eventList = connection.fetchall()
     return render_template("searchresult.html", memberlist = memberList, eventlist = eventList)
 
-
-
-
-# Add new members 
-
+# --- add new members ---
+# display all teams for user to choose a specific team 
+# to add a member to 
 @app.route("/admin/displayteams")
 def displayteams():
     connection = getCursor()
@@ -135,6 +154,10 @@ def displayteams():
     teamList = connection.fetchall()
     return render_template("displayteams.html", teamlist = teamList)
 
+# teamId passed in from browser 
+# select all information for that teamId
+# return teaminfo to the teamplate for diaplay 
+# as a reference for the team the user is adding a member to
 @app.route("/admin/addmember/<teamId>")
 def addmember(teamId):
     connection = getCursor()
@@ -142,6 +165,11 @@ def addmember(teamId):
     teamInfo = connection.fetchall()
     return render_template("addmember.html", teaminfo = teamInfo)
 
+# teamId passed in from browser 
+# request all form data, by way of the POST method
+# insert data into members table
+# except MemberID which will be assigned by MySQL, using auto-increment  
+# redirect to "/listmembers" function to verify the new member  
 @app.route("/admin/addtomembers/<teamId>", methods=["POST"])
 def addtomembers(teamId):
     firstname = request.form.get("firstname").title()
@@ -149,15 +177,13 @@ def addtomembers(teamId):
     city = request.form.get("city")
     birthdate = request.form.get("birthdate")
 
-    # - use re to validate user input
-
     connection = getCursor()
     sql = ("INSERT INTO members (TeamID, FirstName, LastName, City, Birthdate) VALUES (%s, %s, %s, %s, %s)")
     connection.execute(sql, (teamId, firstname, lastname, city, birthdate))
     return redirect("/listmembers")
 
-# and edit the details of existing members
-
+# --- edit existing members ---
+# display all members for user to choose a specific member to edit
 @app.route("/admin/displaymembers")
 def displaymembers():
     connection = getCursor()
@@ -165,6 +191,9 @@ def displaymembers():
     memberList = connection.fetchall()
     return render_template("displaymembers.html", memberlist = memberList)
 
+# memberId passed in from browser 
+# select all information for that memberId
+# return memberinfo to the teamplate for diaplay and editing
 @app.route("/admin/editmember/<memberId>")
 def editmember(memberId):
     connection = getCursor()
@@ -172,6 +201,9 @@ def editmember(memberId):
     memberInfo = connection.fetchall()
     return render_template("editmember.html", memberinfo = memberInfo)
 
+# request new information for the chosen member 
+# update members table 
+# redirect to "/listmembers" for verification
 @app.route("/admin/updatemember/<memberId>", methods=["POST"])
 def updatemember(memberId):
     firstname = request.form.get("firstname").title()
@@ -179,15 +211,14 @@ def updatemember(memberId):
     city = request.form.get("city")
     birthdate = request.form.get("birthdate")
 
-    # - use re to validate user input
-
     connection = getCursor()
     connection.execute("UPDATE members SET FirstName = %s, LastName = %s, City = %s, Birthdate = %s WHERE MemberID = %s;",
                    (firstname, lastname, city, birthdate, memberId))
     return redirect("/listmembers")
     
-# add events 
-
+# --- add events ---
+# select all TeamID, put them in a list, 
+# and pass it to the template for display and for user to choose from 
 @app.route("/admin/addevent")
 def addevent():
     connection = getCursor()
@@ -195,7 +226,8 @@ def addevent():
     teamidList = connection.fetchall()
     return render_template("addevent.html", teamidlist = teamidList)
 
-
+# request form data, through POST
+# insert new event data into events table 
 @app.route("/admin/addtoevents", methods=["POST"])
 def addtoevents():
     eventname = string.capwords(request.form.get("eventname"))
@@ -209,10 +241,8 @@ def addtoevents():
     connection.execute(sql, (eventname, sport, nzteam))
     return redirect("/listevents")
 
-
-
-# add new stages 
-
+# --- add new stages ---
+# select all events for user to choose from and to add a stage to
 @app.route("/admin/displayevents")
 def displayevents():
     connection = getCursor()
@@ -220,6 +250,8 @@ def displayevents():
     eventList = connection.fetchall()
     return render_template("displayevents.html", eventlist = eventList)
 
+# get hold of all information for the chosen event 
+# as a reference for user to add a stage
 @app.route("/admin/addstage/<eventId>")
 def addstage(eventId):
     connection = getCursor()
@@ -227,17 +259,19 @@ def addstage(eventId):
     eventInfo = connection.fetchall()
     return render_template("addstage.html", eventinfo = eventInfo)
 
-
-
-
+# request form data 
+# insert new data to event_stage table
+# select all information of event_stage table for display and verification
 @app.route("/admin/addtostages/<eventId>", methods=["POST"])
 def addtostages(eventId):
-
     stagename = request.form.get("stagename")
     location = request.form.get("location")
     stagedate = request.form.get("stagedate")
     pointstoqualify = request.form.get("pointstoqualify")
 
+    # depending on the stagename, as selected by user and passed in from browser
+    # value for the qualifying variable will be determined 
+    # and value for pointstoqualify will either be kept as is, or set to None 
     if stagename == "Heat 1" or stagename == "Qualification":
         qualifying = 1
     elif stagename == "Final":
@@ -256,19 +290,15 @@ def addtostages(eventId):
 
     return render_template("displaystages.html", stagelist = stageList)
 
-
-
-# Add scores for an event stage and position for a non-qualifying event stage
-
-
-
+# --- add scores and positions ---
+# the following two routes get hold of all information for members and stages respectively
+# return them as lists for display and for user to choose 
 @app.route("/admin/displaymembers2")
 def displaymembers2():
     connection = getCursor()
     connection.execute("SELECT * FROM members;")
     memberList = connection.fetchall()
     return render_template("displaymembers2.html", memberlist = memberList)
-
 
 @app.route("/admin/displaystages2/<memberId>")
 def displaystages2(memberId):
@@ -277,7 +307,8 @@ def displaystages2(memberId):
     stageList = connection.fetchall()
     return render_template("displaystages2.html", stagelist = stageList, memberid = memberId)
 
-
+# stageId and memberId passed in from browser 
+# select all id-related information for display
 @app.route("/admin/addresult/<stageId>/<memberId>")
 def addresult(stageId, memberId):
     connection = getCursor()
@@ -290,19 +321,15 @@ def addresult(stageId, memberId):
 
     return render_template("addresult.html", stageinfo = stageInfo, memberinfo = memberInfo)
 
+# request form data through POST
+# insert new data into results table 
+# select all result information for display and verification
 @app.route("/admin/addtoresults/<stageId>/<memberId>", methods=["POST"])
 def addtoresults(stageId, memberId):
-    
     pointsscored = request.form.get("pointsscored")
     position = request.form.get("position")
     if position == "none":
         position = None
-    
-    # validate input here 
-    # if final, position has to be recorded 
-    # if it is qualifying, position is None   
-
-
 
     connection = getCursor()
     sql = "INSERT INTO event_stage_results (StageID, MemberID, PointsScored, Position) \
@@ -315,13 +342,12 @@ def addtoresults(stageId, memberId):
 
     return render_template("displayresults.html", resultlist = resultList)
     
-# Show the following reports
-# - Number of Gold, Silver and Bronze Medals and who has won them.
-
+# --- medal report ---
+# get hold of total numbers of gold, silver and bronze
+# and the winner lists 
 @app.route("/admin/reportmedals")
 def reportmedals():
 
-    # total number of gold: 
     connection = getCursor()
     connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 1;")
     goldNum = connection.fetchall()[0][0]
@@ -334,7 +360,6 @@ def reportmedals():
     connection.execute("SELECT COUNT(Position) FROM event_stage_results WHERE Position = 3;")
     bronzeNum = connection.fetchall()[0][0]
 
-    # number of gold by member names:
     connection = getCursor()
     connection.execute("SELECT CONCAT(m.FirstName, ' ', m.LastName), COUNT(esr.Position) \
         FROM members m INNER JOIN event_stage_results esr \
@@ -363,22 +388,16 @@ def reportmedals():
         silvernum = silverNum, bronzenum = bronzeNum, goldwinnerlist = goldwinnerList, \
         silverwinnerlist = silverwinnerList, bronzewinnerlist = bronzewinnerList)
 
-# - Members listed grouped into teams, with members ordered by 
-#   last name then first name within each team.
-
-# Team report 
-# total number of teams:
-# # table here:
-# columns: team id, team name, number of members, member names (ordered)
-
+# --- member report --- 
 @app.route("/admin/reportteams")
 def reportteams():
-    # total number of teams:
+   
+    # get hold of total number of teams:
     connection = getCursor()
     connection.execute("SELECT COUNT(TeamID) FROM teams;")
     teamNum = connection.fetchall()[0][0]
 
-    # teamlist, containing number of members in each team 
+    # get hold of teamlist, containing number of members in each team 
     connection = getCursor()
     sql = "SELECT t.TeamID, t.TeamName, COUNT(m.TeamID)\
             FROM teams t LEFT JOIN members m \
@@ -387,7 +406,9 @@ def reportteams():
     connection.execute(sql)
     teamList = connection.fetchall()
 
-    # member names in each team, ordered: 
+    # get hold of team id list
+    # loop through it to get hold of each team id  
+    # use each team id to get hold of members of each team
     connection = getCursor()
     connection.execute("SELECT TeamID FROM teams;")
     teamidList = connection.fetchall()
@@ -399,25 +420,13 @@ def reportteams():
             connection.execute("SELECT FirstName, LastName FROM members WHERE TeamID = %s;", (id,))
             teamMembers.append(connection.fetchall())
     
-    # use sort and lambda to re-order
+    # re-order members in each team, by last names then first names 
     for team in teamMembers:
         team.sort(key=lambda name: name[-1][0])
 
-    # concatenate first and last names 
+    # concatenate first and last names as one string 
+    # put all members of the same team into one list
+    # reassign to teamMembers to become a list of lists of all teams   
     teamMembers = [[f"{name[0]} {name[1]}" for name in team] for team in teamMembers]
 
-    # [['Tiarn Collins', 'Mm Mm', 'Zoi Sadowski-Synnott'], 
-    # [], 
-    # ['Ben Barclay', 'Anja Barugh', 'Finn Bilous', 'Margaux Hackett', 'Nico Porteous'], 
-    # ['Campbell Wright'], 
-    # ['Peter Michael']]
-
     return render_template("reportteams.html", teamnum = teamNum, teamlist = teamList, teammembers = teamMembers)
-
-
-
-
-
-
-
-
