@@ -1,12 +1,12 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- code in here to -->
-<h2>Add an event</h2>
+<!-- teamidlist passed in from server-->
+<!-- collect all form information from browser
+    and send it off by POST, to the URL that will
+    add the data to the events table -->
 
+<h2>Add A New Event</h2>
 
-<!-- send it to the url 
-    that updates the member and event information 
-    which then redirects to displaying the newly added data -->
 <form action="/admin/addtoevents" method="post">
     <label for="eventname">Event Name:</label>
     <input type="text" name="eventname" pattern="[a-zA-Z0-9\s']+" required/>
