@@ -1,7 +1,12 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- eventinfo passed in, for display and reference to what stage info is added to -->
-<h2>Add a Stage to the chosen event</h2>
+<!-- eventinfo passed in from server -->
+<!-- display eventinfo for reference -->
+<!-- collect all form information from browser
+    and send it off by POST, along with eventid 
+    to the URL that will add the data to the stage table -->
+
+<h2>Add A Stage To The Chosen Event</h2>
 
 <table>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
@@ -14,9 +19,6 @@
     {% endfor %}
 </table>
 
-<!-- send it to the url 
-    that updates the member and event information 
-    which then redirects to displaying the newly added data -->
 <form action="/admin/addtostages/{{ eventinfo[0][0] }}" method="post">
     <label for="stagename">Stage Name:</label>
     <select name="stagename">
