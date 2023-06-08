@@ -1,10 +1,11 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- code in here to display a list of events -->
-<!-- eventlist is the variable passed in containing list of events -->
-<!-- eventlist.html shares the same template as memberlist.html -->
+<!-- eventlist passed in from server for display -->
+<!-- append eventid to the URL on click which gets hold of 
+    related information of the chosen id -->
+
 <h2>Event List</h2>
-<h3>click on Event id to add a stage to</h3>
+<h3>Click On Event ID To Add A Stage To</h3>
 
 <table>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
