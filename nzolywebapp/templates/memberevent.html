@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- code in here to display a list of upcoming events-->
-<!--membername, futureeventlist, pasteventlist-->
+<!-- display a list of upcoming and past events, if any -->
+<!-- membername, futureeventlist, pasteventlist passed in from server-->
 <h2>{{membername}}</h2>
-<h3>Upcoming Events & Stages</h3>
+<h3>Upcoming Events and Stages</h3>
 <table>
     {% for events in futureeventlist %}
         <tr>
