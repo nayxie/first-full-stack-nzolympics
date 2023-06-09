@@ -1,12 +1,13 @@
 {% extends "adminbase.html" %}
 {% block content %}
+<!-- display a form to collect new event information -->
 <!-- teamidlist passed in from server -->
 <!-- display id in teamidlist for user to choose --> 
 <!-- collect all form information from browser
     and send it off by POST, to the URL that will
     add the data to the events table -->
 
-<h2>Add A New Event</h2>
+<h2>Add a New Event</h2>
 
 <form action="/admin/addtoevents" method="post">
     <label for="eventname">Event Name:</label>
@@ -14,7 +15,7 @@
     <label for="sport">Sport:</label>
     <input type="text" name="sport" pattern="[a-zA-Z\s]+" required/>
     
-    <label for="nzteam">Select A Team:</label>
+    <label for="nzteam">Select a Team:</label>
     <select name="nzteam" required>
         {% for teamid in teamidlist %}
             {% for entry in teamid %}
