@@ -1,7 +1,8 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- teamnum, teamlist, teammembers
-t.TeamID, t.TeamName, COUNT(m.TeamID)-->
+<!-- report on total number of teams, total number of members each team, and their members -->  
+<!-- members in each team are ordered by last name, then first name -->
+<!-- teamnum, teamlist, teammembers passed in from server -->
 
 <h2>Team Report</h2>
 
@@ -14,13 +15,11 @@ t.TeamID, t.TeamName, COUNT(m.TeamID)-->
         <td>{{ team[0] }}</td>
         <td>{{ team[1] }}</td>
         <td>{{ team[2] }}</td>
-            {% for entry in teammembers[index-1] %}
-                <td>{{entry}}</td>
-            {% endfor %}
+        {% for entry in teammembers[index-1] %}
+            <td>{{entry}}</td>
+        {% endfor %}
     </tr>
     {% endfor %}
-    
 </table>
-
 
 {% endblock %}
