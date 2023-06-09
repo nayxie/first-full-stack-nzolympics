@@ -1,10 +1,13 @@
 {% extends "adminbase.html" %}
 {% block content %}
-<!-- backend passes in memberInfo -->
-<h2>Edit Information of the chosen Member</h2>
+<!-- display a form to collect new member information -->
+<!-- memberInfo passed in from server for display -->
+<!-- collect all form information from browser
+    and send it off by POST, along with memberid 
+    to the URL that will update the data to the members table -->
 
-<!-- m.MemberID, m.FirstName, m.LastName, m.City, m.Birthdate, \
-    e.EventName, e.Sport -->
+<h2>Edit Information of the Chosen Member</h2>
+
 <form action="/admin/updatemember/{{ memberinfo[0][0] }}" method="post">
     <label for="memberid">Member ID:</label>
     <input type="text" name="memberid" value="{{ memberinfo[0][0] }}" readonly>
