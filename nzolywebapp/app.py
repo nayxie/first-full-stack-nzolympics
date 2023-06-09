@@ -38,7 +38,7 @@ def listmembers():
     connection = getCursor()
     # inner join members and teams to get hold of team names
     # and select all members who have got a team
-    sql = "SELECT m.MemberID, t.TeamName, m.FirstName, m.LastName, m.City, m.Birthdate \
+    sql = "SELECT m.MemberID, t.TeamName, CONCAT(m.FirstName, ' ', m.LastName), m.City, m.Birthdate \
     FROM members m INNER JOIN teams t ON m.TeamID = t.TeamID;"
     connection.execute(sql)
     memberList = connection.fetchall()
