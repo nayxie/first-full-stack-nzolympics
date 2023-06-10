@@ -47,7 +47,7 @@ def listmembers():
 # --- list future and past events ---
 # memberId passed in from browser
 # get hold of all future and past events, if any, for that memberId
-# return the ID, name, and two event lists for the member to the template   
+# return the ID, name, and two event lists of the member to the template   
 @app.route("/memberevent/<memberId>")
 def memberevent(memberId):
     connection = getCursor()
@@ -129,7 +129,7 @@ def search():
 
 # request the search term from browser, by way of the POST method 
 # use f-string and %, the wildcard symbol, for partial matches
-# select from both members and events
+# select from both members and events tables
 # return results in two seperate lists
 @app.route("/admin/search/result", methods=["POST"])
 def searchresult():
