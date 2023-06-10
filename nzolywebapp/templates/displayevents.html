@@ -8,8 +8,11 @@
 <h2>Event List</h2>
 <h3>Click on Event ID to Add a Stage to</h3>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
+    </thread>
+    <tbody>
     {% for event in eventlist %}
         <tr>
             <td><a href="/admin/addstage/{{ event[0] }}">{{ event[0] }}</a></td>
@@ -18,6 +21,7 @@
             <td>{{ event[3] }}</td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
