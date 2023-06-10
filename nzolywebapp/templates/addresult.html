@@ -9,8 +9,11 @@
 
 <h2>Add a Result to the Chosen Member and Stage</h2>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
+    </thread>
+    <tbody>
     {% for member in memberinfo %}
         <tr>
             {% for entry in member %}
@@ -18,6 +21,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <table>
