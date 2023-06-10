@@ -5,8 +5,11 @@
 
 <h2>Result List</h2>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Result ID</th><th>Stage ID</th><th>Member ID</th><th>Points Scored</th><th>Position</th></tr>
+    </thread>
+    <tbody>
     {% for result in resultlist %}
         <tr>
             {% for entry in result %}
@@ -14,6 +17,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
