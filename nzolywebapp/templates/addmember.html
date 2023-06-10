@@ -9,8 +9,11 @@
 
 <h2>Add a Member to the Chosen Team</h2>
 
-<table>
+<table class="table">
+    <thead>
     <tr><th>Team ID</th><th>Team Name</th></tr>
+    </thead>
+    <tbody>
     {% for team in teaminfo %}
         <tr>
             {% for entry in team %}
@@ -18,6 +21,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <form action="/admin/addtomembers/{{ teaminfo[0][0] }}" method="post">
