@@ -6,8 +6,11 @@
 <h2>Medal Report</h2>
 
 <h3>Total number of gold: {{ goldnum }} </h3>
-<table>
+<table class="table">
+    <thread>
     <tr><th>Winners</th><th>Number of Gold Medals</th></tr>
+    </thread>
+    <tbody>
     {% for winner in goldwinnerlist %}
         <tr>
             {% for entry in winner %}
@@ -15,11 +18,15 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <h3>Total number of silver: {{ silvernum }} </h3>
-<table>
+<table class="table">
+    <thread>
     <tr><th>Winners</th><th>Number of Silver Medals</th></tr>
+    </thread>
+    <tbody>
     {% for winner in silverwinnerlist %}
         <tr>
             {% for entry in winner %}
@@ -27,11 +34,15 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <h3>Total number of bronze: {{ bronzenum }} </h3>
-<table>
+<table class="table">
+    <thread>
     <tr><th>Winners</th><th>Number of Bronze Medals</th></tr>
+    </thread>
+    <tbody>
     {% for winner in bronzewinnerlist %}
         <tr>
             {% for entry in winner %}
@@ -39,6 +50,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
