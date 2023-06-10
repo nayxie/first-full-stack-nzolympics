@@ -9,8 +9,11 @@
 
 <h2>Add a Stage to the Chosen Event</h2>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
+    </thead>
+    <tbody>
     {% for event in eventinfo %}
         <tr>
             {% for entry in event %}
@@ -18,6 +21,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <form action="/admin/addtostages/{{ eventinfo[0][0] }}" method="post">
