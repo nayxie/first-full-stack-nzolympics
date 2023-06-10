@@ -8,8 +8,11 @@
 <h2>Member List</h2>
 <h3>Click on Member ID to Add a Result to</h3>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Member ID</th><th>Team ID</th><th>First Name</th><th>Last Name</th><th>City</th><th>Birthdate</th></tr>
+    </thread>
+    <tbody>
     {% for member in memberlist %}
         <tr>
             <td><a href="/admin/displaystages2/{{ member[0] }}">{{ member[0] }}</a></td>
@@ -20,6 +23,7 @@
             <td>{{ member[5] }}</td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
