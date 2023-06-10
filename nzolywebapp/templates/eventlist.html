@@ -6,8 +6,11 @@
 <h2>Event List</h2>
 <h3>A List of all NZ Olympic Events</h3>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Event ID</th><th>Event Name</th><th>Sport</th><th>NZ Team</th></tr>
+    </thread>
+    <tbody>
     {% for event in eventlist %}
         <tr>
             {% for entry in event %}
@@ -15,6 +18,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
