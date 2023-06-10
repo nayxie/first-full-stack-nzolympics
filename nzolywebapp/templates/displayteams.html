@@ -8,14 +8,18 @@
 <h2>Team List</h2>
 <h3>Click on Team ID to Add a Member to</h3>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Team ID</th><th>Team Name</th></tr>
+    </thread>
+    <tbody>
     {% for team in teamlist %}
         <tr>
             <td><a href="/admin/addmember/{{ team[0] }}">{{ team[0] }}</a></td>
             <td>{{ team[1] }}</td>
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
