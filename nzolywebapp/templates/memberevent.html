@@ -4,7 +4,8 @@
 <!-- membername, futureeventlist, pasteventlist passed in from server-->
 <h2>{{membername}}</h2>
 <h3>Upcoming Events and Stages</h3>
-<table>
+<table class="table">
+    <tbody>
     {% for events in futureeventlist %}
         <tr>
             {% for entry in events %}
@@ -12,11 +13,13 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <!-- code in here to display a list of past events-->
 <h3>Previous Results</h3>
-<table>
+<table class="table">
+    <tbody>
     {% for events in pasteventlist %}
         <tr>
             {% for entry in events %}
@@ -24,6 +27,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
