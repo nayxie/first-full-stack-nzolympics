@@ -5,8 +5,11 @@
 
 <h2>Stage List</h2>
 
-<table>
+<table class="table">
+    <thread>
     <tr><th>Stage ID</th><th>Stage Name</th><th>Event ID</th><th>Location</th><th>Stage Date</th><th>Qualifying</th><th>Points To Qualify</th></tr>
+    </thread>
+    <tbody>
     {% for stage in stagelist %}
         <tr>
             {% for entry in stage %}
@@ -14,6 +17,7 @@
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
