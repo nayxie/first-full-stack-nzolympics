@@ -7,19 +7,24 @@
 <h2>Team Report</h2>
 
 <h3>Total number of teams: {{ teamnum }} </h3>
-<table>
+<table class="table">
+    <thead>
     <tr><th>Team ID</th><th>Team Name</th><th>Number of Members</th><th>Members</th></tr>
+    </thead>
+    <tbody>
     {% for team in teamlist %}
     {% set index = loop.index %}
     <tr>
         <td>{{ team[0] }}</td>
         <td>{{ team[1] }}</td>
         <td>{{ team[2] }}</td>
+    
         {% for entry in teammembers[index-1] %}
             <td>{{entry}}</td>
         {% endfor %}
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
