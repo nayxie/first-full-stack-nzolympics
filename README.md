@@ -1,6 +1,8 @@
 # 636final-nzoly
 ## NZ Winter Olympics Project Report
 
+This report presents the web application I have designed for one Olympic Games. It details the routes and functions, designs and assumptions, and the future project if it were to support multiple Games.
+
 ### *Routes and Functions*
 
 The default route is where the web application starts, which returns the base template. Depending on the link the user clicks on, it goes down to one of the three routes to list members, list events, or display the admin base template. The list members and list events functions are similar, which get hold of all the data from either the members or events table and return it to their respective templates. 
