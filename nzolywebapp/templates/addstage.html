@@ -38,7 +38,7 @@
         <option value="Other Locations">Other Locations</option>
     </select>
     <label for="stagedate">Stage Date:</label> 
-    <input type="date" name="stagedate" required/>
+    <input type="date" name="stagedate" required min="2022-02-20"/>
     <label for="pointstoqualify">Points to Qualify:</label>
     <input type="text" name="pointstoqualify" pattern="[0-9]+(\.[0-9])?" required/>
 
@@ -46,12 +46,3 @@
 </form>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
