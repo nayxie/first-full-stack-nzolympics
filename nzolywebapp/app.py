@@ -388,7 +388,7 @@ def reportmedals():
         silvernum = silverNum, bronzenum = bronzeNum, goldwinnerlist = goldwinnerList, \
         silverwinnerlist = silverwinnerList, bronzewinnerlist = bronzewinnerList)
 
-# --- member report --- 
+# --- team report --- 
 @app.route("/admin/reportteams")
 def reportteams():
    
@@ -424,7 +424,7 @@ def reportteams():
     for team in teamMembers:
         team.sort(key=lambda name: name[-1][0])
 
-    # concatenate first and last names as one string 
+    # concatenate first and last names into one string 
     # put all members of the same team into one list
     # reassign to teamMembers to become a list of lists of all teams   
     teamMembers = [[f"{name[0]} {name[1]}" for name in team] for team in teamMembers]
