@@ -1,7 +1,7 @@
 # 636final-nzoly
-# NZ Winter Olympics Project Report
+## NZ Winter Olympics Project Report
 
-## Routes and Functions
+### *Routes and Functions*
 
 The default route is where the web application starts, which returns the base template. Depending on the link the user clicks on, it goes down to one of the three routes to list members, list events, or display the admin base template. The list members and list events functions are similar, which get hold of all the data from either the members or events table and return it to their respective templates. 
 
@@ -15,7 +15,7 @@ The edit member function follows similar logic and procedures, but instead of in
 
 The two reporting routes, medal report and team report, use aggregate functions, conditional clauses, grouping, and joins in sql queries to get hold of data, and pass numbers and lists to the templates for display. In the report teams function, for loops, lambda, and list comprehension are used to get hold of, sort, and concatenate data values. 
 
-## Designs and Assumptions 
+### *Designs and Assumptions* 
 
 A lot of templates are similar and shared in this web application. Base and admin base share the same template, containing a list of URLs of their related routes and functions, and they provide a base all other templates extend on. All display templates, including member list, member event, event list, search result, and the two report templates, share similar structures. Depending on whether the user is required to choose an ID, the template displays the table content either with or without links. Similarly, all add templates, including edit member and search, use a similar structure to display a table content, if a specific ID was chosen prior to the input step, and more importantly display a form to elicit user input.  
 
@@ -27,7 +27,7 @@ On the server side, the title method is used to capitalise the first character o
 
 The distinction between past and future events are determined by whether there are results recorded, as stated in the assessment specification, and with the provided data only past events are present in the tables. An assumption could be made that all recorded dates were in the past and any new entry would be related to time after the most recent date values in stage date, 2022-02-19. It justifies the use of the min attribute for the stage date form control to allow the user to select only dates from 2022-02-20 onwards.
 
-## Future Project 
+### *Future Project* 
 
 This web application could be used to host multiple Olympic Games in the future. A separate database could be created for each game and each database should follow the same schema as the current one. 
 
